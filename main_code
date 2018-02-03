@@ -120,11 +120,22 @@ pred_results=clf.predict(dtm_test)
 metrics.accuracy_score(train_target, g)
 metrics.confusion_matrix(train_target, g)
 clf.predict_proba(dtm)[:,1]
+print(metrics.classification_report(test_target,pred_results))
 
 # create outcome set to see results for specific note_id 
 myresults=pd.DataFrame( {'Note_ID': train_pd.ix[:,0].tolist(), 'NOTE_STATUS_ACTUAL': train_target, 'PREDICTED_STATUS': pred_results })
 
-print(metrics.classification_report(test_target,pred_results))
+# convenient approach is using a pipeline
+  # this pipeline uses the CountVec with custom dictionary and SVM
+pip_cv_voc_svm = Pipeline([('vect', CountVectorizer(vocabulary=param_dict_full)),('clf', SGDClassifier(alpha=.0001, n_iter=50,penalty="elasticnet"))])
+ # this pipeline uses Tfidf and SVM
+pip_tfid_svm = Pipeline([('vect', TfidfVectorizer(max_df=0.95, min_df=2,stop_words='english')),('clf', SGDClassifier(alpha=.0001, n_iter=50,penalty="elasticnet"))])
+
+trained_clf = pip_cv_voc_svm.fit(train_notes,train_target)
+pred_results = trained_clf.predict(test_ex_notes)
+metrics.accuracy_score(test_ex_target, pred_results)
+cv_voc_svm_report = metrics.classification_report(test_ex_target,pred_results)
+
 
 # save and load model
 joblib.dump(clf, 'SGDC_model.pkl')
