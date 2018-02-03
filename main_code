@@ -52,14 +52,25 @@ test_notes = test_pd.ix[:,2].tolist()
 test_target = test_pd.ix[:,1].tolist()
 
  # review the test vector
- test_target.count("N")
+test_target.count("N")
 
 ## THE VECTORIZERS from scikit learn
+
+# experiment with custom pre-built vocab
+
+param_dict_cc = ['chief', 'complaint']
+param_dict_hist = ['medications', 'social', 'family', 'depression', 'sexual', 'marital', 'ros', 'history', 'surgical', 'medical']
+param_dict_other = ['current', 'allergies', 'behavioral', 'behavior', 'illness', 'present', 'physical', 'review','system''cardiac','pulmonary', 'respiratory', 'cardiovascular']
+param_dict_full = ['chief', 'complaint', 'medications', 'social', 'family', 'depression', 'sexual', 'marital', 'ros', 'history', 'surgical', 'medical', 'current', 'allergies', 'behavioral', 'behavior', 'illness', 'present', 'physical', 'review','system', 'cardiac','pulmonary', 'respiratory', 'cardiovascular']
+
 
 # for CountVectorizer
 vect = CountVectorizer()
 # this was better on false positives
 vect = CountVectorizer(max_df=0.95, min_df=2,stop_words='english')
+
+# used with custom vocab
+vect = CountVectorizer(vocabulary=param_dict_full)
 
 # for Tfid Vectorizer which is good if you don't want larger notes having bias
 vect = TfidfVectorizer()
