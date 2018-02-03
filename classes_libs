@@ -10,5 +10,6 @@ from sklearn.feature_extraction.text import CountVectorizer
 import numpy as np
 import pandas as pd
 from string import upper
-From string import lower
-From string import join
+from string import lower
+from string import join
+from sklearn.linear_model import SGDClassifier
