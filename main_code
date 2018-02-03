@@ -1,0 +1,96 @@
+# run on edge node cluster 3 command line
+hdfs dfs -copyFromLocal HP_NOTE_TEXT_TRAIN_YES.csv
+hdfs dfs -copyFromLocal HP_NOTE_TEXT_TRAIN_NO.csv
+
+# pyspark code
+pyspark2
+df = sqlContext.read.format("csv").options(header='true', inferschema='true').option("delimiter", "|").load("hdfs://rushdatascience/user/damin/HP_NOTE_TEXT_TRAIN_YES.csv")
+  
+  # the notes that were a NO on being complete
+df_no = sqlContext.read.format("csv").options(header='true', inferschema='true').option("delimiter", "|").load("hdfs://rushdatascience/user/damin/HP_NOTE_TEXT_TRAIN_NO.csv")
+
+  /**** common steps ******/
+df.createOrReplaceTempView('train_data')
+result = sqlContext.sql("select EPIC_PAT_ID,MRN,NOTE_ID,NOTE_CSN_ID,SURG_DATE,ALL_ELEMENTS_ADDED_YN,concat_ws('\n ', collect_list(NOTE_TEXT)) as MERGED_NOTE_TEXT from train_data group by EPIC_PAT_ID,MRN,NOTE_ID,NOTE_CSN_ID,SURG_DATE,ALL_ELEMENTS_ADDED_YN")
+result.count()
+result.write.parquet("HP_NOTE_TEXT_MERGED_YES.parquet")
+  
+  # same steps for NOs
+df_no.createOrReplaceTempView('train_data')
+result = sqlContext.sql("select EPIC_PAT_ID,MRN,NOTE_ID,NOTE_CSN_ID,SURG_DATE,ALL_ELEMENTS_ADDED_YN,concat_ws('\n ', collect_list(NOTE_TEXT)) as MERGED_NOTE_TEXT from train_data group by EPIC_PAT_ID,MRN,NOTE_ID,NOTE_CSN_ID,SURG_DATE,ALL_ELEMENTS_ADDED_YN")
+result.count()
+result.write.parquet("HP_NOTE_TEXT_MERGED_NO.parquet")
+
+   # reading in the parquet files.  Above steps can be skipped if these parquet files are already present
+   
+ # creating the dataframes to make other steps easier
+ 
+limit_train = parquet_HP_yes.selectExpr("NOTE_ID","ALL_ELEMENTS_ADDED_YN as TARGET_CLASS","MERGED_NOTE_TEXT").limit(100)
+full_train = parquet_HP_yes.selectExpr("NOTE_ID","ALL_ELEMENTS_ADDED_YN as TARGET_CLASS","MERGED_NOTE_TEXT")
+
+limit_train_no = parquet_HP_no.selectExpr("NOTE_ID","ALL_ELEMENTS_ADDED_YN as TARGET_CLASS","MERGED_NOTE_TEXT").limit(15)
+full_train_no = parquet_HP_no.selectExpr("NOTE_ID","ALL_ELEMENTS_ADDED_YN as TARGET_CLASS","MERGED_NOTE_TEXT")
+
+  
+# merged dataset 
+  # used limit_train for training model but this can change
+limit_train = limit_train.union(limit_train_no)
+
+ # full train can be used for test datasets
+full_train=full_train.union(full_train_no)
+   # slicing out a random sample for testing 
+limit_test = full_train.sample(False, .56, seed = 0)
+
+# create pandas jcould probably skip this for larger dataset and just form lists from the dataframe 
+train_pd = limit_train.toPandas()
+test_pd = limit_test.toPandas()
+
+train_notes = train_pd.ix[:,2].tolist()
+train_target = train_pd.ix[:,1].tolist()
+
+test_notes = test_pd.ix[:,2].tolist()
+test_target = test_pd.ix[:,1].tolist()
+
+ # review the test vector
+ test_target.count("N")
+
+## THE VECTORIZERS from scikit learn
+
+# for CountVectorizer
+vect = CountVectorizer()
+# this was better on false positives
+vect = CountVectorizer(max_df=0.95, min_df=2,stop_words='english')
+
+# for Tfid Vectorizer which is good if you don't want larger notes having bias
+vect = TfidfVectorizer()
+# this was better on false positives
+vect = TfidfVectorizer(max_df=0.95, min_df=2,stop_words='english')
+
+# fit and transform the training set and transform only for test set
+dtm = vect.fit_transform(train_notes)
+dtm_test = vect.transform(test_notes)
+
+# steps to inspect the vector metadata
+vocab = vect.vocabulary_
+vectpd = pd.DataFrame(dtm.toarray(), columns=vect.get_feature_names())
+vectpd.ix[:, ['chief','complaint']]
+
+# classifier training
+clf = BernoulliNB()
+clf = clf.fit(dtm, train_target)
+
+# verify how it did against the training set itself and/or test set
+
+g= clf.predict(dtm)
+pred_results=clf.predict(dtm_test)
+
+# run below for test_target and dtm_test also
+metrics.accuracy_score(train_target, g)
+metrics.confusion_matrix(train_target, g)
+clf.predict_proba(dtm)[:,1]
+
+# create outcome set to see results for specific note_id 
+myresults=pd.DataFrame( {'Note_ID': train_pd.ix[:,0].tolist(), 'NOTE_STATUS_ACTUAL': train_target, 'PREDICTED_STATUS': pred_results })
+
+
+
