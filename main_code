@@ -27,6 +27,7 @@ result.write.parquet("HP_NOTE_TEXT_MERGED_NO.parquet")
  
 limit_train = parquet_HP_yes.selectExpr("NOTE_ID","ALL_ELEMENTS_ADDED_YN as TARGET_CLASS","MERGED_NOTE_TEXT").limit(100)
 full_train = parquet_HP_yes.selectExpr("NOTE_ID","ALL_ELEMENTS_ADDED_YN as TARGET_CLASS","MERGED_NOTE_TEXT")
+full_yes = parquet_HP_yes.selectExpr("NOTE_ID","ALL_ELEMENTS_ADDED_YN as TARGET_CLASS","MERGED_NOTE_TEXT")
 
 limit_train_no = parquet_HP_no.selectExpr("NOTE_ID","ALL_ELEMENTS_ADDED_YN as TARGET_CLASS","MERGED_NOTE_TEXT").limit(15)
 full_train_no = parquet_HP_no.selectExpr("NOTE_ID","ALL_ELEMENTS_ADDED_YN as TARGET_CLASS","MERGED_NOTE_TEXT")
@@ -42,6 +43,18 @@ full_train=full_train.union(full_train_no)
 limit_test = full_train.sample(False, .56, seed = 0)
 
 # create pandas jcould probably skip this for larger dataset and just form lists from the dataframe 
+
+# create exclusive test_set
+test_yes_pd = full_yes.toPandas()
+test_no_pd = full_train_no.toPandas()
+
+test_yes_ex=test_yes_pd.ix[100:,]
+test_no_ex=test_no_pd.ix[15:,]
+
+frames = [test_yes_ex,test_no_ex]
+test_ex_pd = pd.concat(frames)
+
+# build train and random test 
 train_pd = limit_train.toPandas()
 test_pd = limit_test.toPandas()
 
@@ -50,6 +63,9 @@ train_target = train_pd.ix[:,1].tolist()
 
 test_notes = test_pd.ix[:,2].tolist()
 test_target = test_pd.ix[:,1].tolist()
+
+test_ex_notes = test_ex_pd.ix[:,2].tolist()
+test_ex_target = test_ex_pd.ix[:,1].tolist()
 
  # review the test vector
 test_target.count("N")
