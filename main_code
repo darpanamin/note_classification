@@ -76,7 +76,12 @@ vectpd = pd.DataFrame(dtm.toarray(), columns=vect.get_feature_names())
 vectpd.ix[:, ['chief','complaint']]
 
 # classifier training
+ # bernoulli naive bayes
 clf = BernoulliNB()
+clf = clf.fit(dtm, train_target)
+
+ # linear suppor vector machine
+clf=SGDClassifier(alpha=.0001, n_iter=50,penalty="elasticnet")
 clf = clf.fit(dtm, train_target)
 
 # verify how it did against the training set itself and/or test set
@@ -92,5 +97,6 @@ clf.predict_proba(dtm)[:,1]
 # create outcome set to see results for specific note_id 
 myresults=pd.DataFrame( {'Note_ID': train_pd.ix[:,0].tolist(), 'NOTE_STATUS_ACTUAL': train_target, 'PREDICTED_STATUS': pred_results })
 
+print(metrics.classification_report(test_target,g))
 
 
