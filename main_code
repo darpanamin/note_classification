@@ -99,4 +99,8 @@ myresults=pd.DataFrame( {'Note_ID': train_pd.ix[:,0].tolist(), 'NOTE_STATUS_ACTU
 
 print(metrics.classification_report(test_target,g))
 
+# save and load model
+joblib.dump(clf, 'SGDC_model.pkl')
+   # to load model later
+clf = joblib.load('SGDC_model.pkl')
 
