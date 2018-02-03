@@ -54,6 +54,13 @@ test_no_ex=test_no_pd.ix[15:,]
 frames = [test_yes_ex,test_no_ex]
 test_ex_pd = pd.concat(frames)
 
+#create equal 50-50 Y/N dataset
+test_yes_eq = test_yes_pd.sample(n=10,random_state = 5)
+test_no_eq = test_no_pd.sample(n=10,random_state = 5)
+
+frames = [test_yes_eq,test_no_eq]
+test_eq_pd = pd.concat(frames)
+
 # build train and random test 
 train_pd = limit_train.toPandas()
 test_pd = limit_test.toPandas()
@@ -66,6 +73,9 @@ test_target = test_pd.ix[:,1].tolist()
 
 test_ex_notes = test_ex_pd.ix[:,2].tolist()
 test_ex_target = test_ex_pd.ix[:,1].tolist()
+
+test_eq_notes = test_eq_pd.ix[:,2].tolist()
+test_eq_target = test_eq_pd.ix[:,1].tolist()
 
  # review the test vector
 test_target.count("N")
