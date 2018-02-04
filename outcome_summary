@@ -1,4 +1,37 @@
 
+Overview:
+
+Data Prep
+-Used the HP note audit excel to identify notes to gather from Clarity.  
+-Moved a raw dump of the notes data to HDFS.  
+-Created Spark dataframes to create a final dataframe.  Used sparksql to merge the lines of note text into one column.
+-Ended up with an inventory of 206 notes.  With more 'Yes = note audited to complete" vs No's.  
+
+Training
+-Created a training dataset with 115 notes.  100 = Y 15 = N
+-Used Scikit Learn to vectorize and classify
+-For vectorizing the data used DTMs.
+-For vectorizing the data looked at 4 approaches
+  TFID
+  TFID with parameters to eliminate outlier tokens and common english stop words
+  Count Vec
+  Count Vec with a custom vocab of 25 words created by analyzing the 'good HP notes'
+-For ML classifiers
+   Naive Bayes (Multinomial)
+   Naive Bayes (Bernoulli)
+   SVM with SGD (http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.SGDClassifier.html)
+   SVM with SGD with penalty = elasticnet
+-Created pipelines with to combine the vectorizers and classifiers
+-Saved trained models
+
+Testing
+- Created/Used the following test datasets
+  Training Dataset as Test Dataset
+  EX : All notes not part of training data
+  EQ:  Random samples from the EX dataset where Yes/No breakdown is 50/50
+  Random: random samples from the entire set of notes data available
+- Chose SVM with SGD penalty = elasticnet because it showed the best results.  
+- Using CountVec with custom vocub seemed to do the best to improve sensitivity of the No's.  
 
 
 Terms:
@@ -9,7 +42,7 @@ Count Vec = Sparse representation of token counts for each note
 
 ************************************************************************************
 Option 1:
-TFID / SGD
+TFID / SGD  (TFID with parameters to remove outliers)
 ************************************************************************************
 
 EX Test (91 size)  All records distinct from training set
