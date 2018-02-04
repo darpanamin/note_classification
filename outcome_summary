@@ -1,5 +1,16 @@
 
-TFID / SVM
+
+
+Terms:
+TFID = Term Frequency Inverse Document Frequency
+SGD = Stochastic Gradient Descent
+Count Vec = Sparse representation of token counts for each note
+
+
+************************************************************************************
+Option 1:
+TFID / SGD
+************************************************************************************
 
 EX Test (91 size)  All records distinct from training set
 
@@ -30,10 +41,10 @@ Random Test (46)  could include records from training data
 
 avg / total       0.98      0.98      0.98        46
 
------------------------------------------------------------------------------------------
------------------------------------------------------------------------------------------
-
-Count Vec with custom vocab / SVM
+******************************************************************************************************
+Option 2
+Count Vec with custom vocab / SGD
+******************************************************************************************************
 
 EX Test (91 size)
 
