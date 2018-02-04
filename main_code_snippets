@@ -1,3 +1,5 @@
+# NOT MEANT TO BE USED AS A RUN SCRIPT
+
 # run on edge node cluster 3 command line
 hdfs dfs -copyFromLocal HP_NOTE_TEXT_TRAIN_YES.csv
 hdfs dfs -copyFromLocal HP_NOTE_TEXT_TRAIN_NO.csv
