@@ -21,6 +21,8 @@ Training
    Naive Bayes (Bernoulli)
    SVM with SGD (http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.SGDClassifier.html)
    SVM with SGD with penalty = elasticnet
+   Neural Networks with various settings for hidden layer and number of iterations
+   
 -Created pipelines with to combine the vectorizers and classifiers
 -Saved trained models
 
