@@ -59,7 +59,7 @@ frames = [test_yes_ex,test_no_ex]
 test_ex_pd = pd.concat(frames)
 
 #create equal 50-50 Y/N dataset
-nsamples = 10
+nsamples = 15
 seed_val = 5
 
 test_yes_eq = test_yes_pd.sample(n=nsamples,random_state = seed_val)
