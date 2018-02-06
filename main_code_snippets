@@ -24,7 +24,9 @@ result.count()
 result.write.parquet("HP_NOTE_TEXT_MERGED_NO.parquet")
 
    # reading in the parquet files.  Above steps can be skipped if these parquet files are already present
-   
+parquet_HP_yes = spark.read.parquet("hdfs://rushdatascience/user/damin/HP_NOTE_TEXT_MERGED_YES.parquet")
+parquet_HP_no = spark.read.parquet("hdfs://rushdatascience/user/damin/HP_NOTE_TEXT_MERGED_NO.parquet")
+
  # creating the dataframes to make other steps easier
  
 limit_train = parquet_HP_yes.selectExpr("NOTE_ID","ALL_ELEMENTS_ADDED_YN as TARGET_CLASS","MERGED_NOTE_TEXT").limit(100)
