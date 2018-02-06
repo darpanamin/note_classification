@@ -108,3 +108,18 @@ Random Test (46) could include records from training data
           Y       0.94      0.82      0.88        40
 
 avg / total       0.87      0.80      0.83        46
+
+******************************************************************************************************
+Option 3
+Count Vec with custom vocab / Neural Networks (hidden layer = 28 neuron (single layer), 500 iterations)
+******************************************************************************************************
+
+EX Test (91 size)
+
+             precision    recall  f1-score   support
+
+          N       1.00      0.65      0.79        23
+          Y       0.89      1.00      0.94        68
+
+avg / total       0.92      0.91      0.91        91
+
