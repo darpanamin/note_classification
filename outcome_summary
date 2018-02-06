@@ -21,7 +21,7 @@ Training
    Naive Bayes (Bernoulli)
    SVM with SGD (http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.SGDClassifier.html)
    SVM with SGD with penalty = elasticnet
-   Neural Networks with various settings for hidden layer and number of iterations
+   Neural Networks w/ SGD using various settings for hidden layer and number of iterations
    
 -Created pipelines with to combine the vectorizers and classifiers
 -Saved trained models
@@ -113,7 +113,7 @@ avg / total       0.87      0.80      0.83        46
 
 ******************************************************************************************************
 Option 3
-Count Vec with custom vocab / Neural Networks (hidden layer = 28 neuron (single layer), 500 iterations)
+Count Vec with custom vocab / Neural Networks (solver =  SGD , hidden layer = 28 neuron (single layer), 500 iterations)
 ******************************************************************************************************
 
 EX Test (91 size)
