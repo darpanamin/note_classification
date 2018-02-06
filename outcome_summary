@@ -133,5 +133,11 @@ EQ Test (30 size)
 
 avg / total       0.87      0.87      0.87        30
 
-Random Test (46) could include records from training data
+Random Test (53) could include records from training data
 
+             precision    recall  f1-score   support
+
+          N       1.00      0.73      0.84        11
+          Y       0.93      1.00      0.97        42
+
+avg / total       0.95      0.94      0.94        53
