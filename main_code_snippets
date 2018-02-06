@@ -120,6 +120,7 @@ vectpd = pd.DataFrame(dtm.toarray(), columns=vect.get_feature_names())
 vectpd.ix[:, ['chief','complaint']]
 
 # classifier training
+
  # bernoulli naive bayes
 clf = BernoulliNB()
 clf = clf.fit(dtm, train_target)
@@ -128,13 +129,13 @@ clf = clf.fit(dtm, train_target)
 clf=SGDClassifier(alpha=.0001, n_iter=50,penalty="elasticnet")
 clf = clf.fit(dtm, train_target)
 
-# neural networks
-
+ # neural networks
+  ## for MLP be careful when re-training or re-running.  The model seems to not alway update.  0 out the variables (mlp/clf)
 mlp = MLPClassifier(hidden_layer_sizes=(28),solver='sgd',learning_rate_init=0.01,max_iter=500)
 clf = mlp.fit(dtm, train_target)
 pred_results = clf.predict(dtm_test_ex)
 print(metrics.classification_report(test_ex_target,pred_results))
-
+joblib.dump(clf, 'NNMLP_model.pkl')
 
 # verify how it did against the training set itself and/or test set
 
