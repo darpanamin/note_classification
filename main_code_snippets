@@ -128,6 +128,14 @@ clf = clf.fit(dtm, train_target)
 clf=SGDClassifier(alpha=.0001, n_iter=50,penalty="elasticnet")
 clf = clf.fit(dtm, train_target)
 
+# neural networks
+
+mlp = MLPClassifier(hidden_layer_sizes=(28),solver='sgd',learning_rate_init=0.01,max_iter=500)
+clf = mlp.fit(dtm, train_target)
+pred_results = clf.predict(dtm_test_ex)
+print(metrics.classification_report(test_ex_target,pred_results))
+
+
 # verify how it did against the training set itself and/or test set
 
 g= clf.predict(dtm)
