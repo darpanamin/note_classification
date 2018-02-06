@@ -123,3 +123,15 @@ EX Test (91 size)
 
 avg / total       0.92      0.91      0.91        91
 
+
+EQ Test (30 size)
+
+             precision    recall  f1-score   support
+
+          N       0.92      0.80      0.86        15
+          Y       0.82      0.93      0.87        15
+
+avg / total       0.87      0.87      0.87        30
+
+Random Test (46) could include records from training data
+
