@@ -1,5 +1,4 @@
 # note_classification
 
-Code Snippets are not meant to be run as a script
+All code has been moved to BitBucket.
 
-Initial Results are available for the classifier/vectorizer combinations used.
